@@ -1,0 +1,95 @@
+CREATE TABLE Customer(
+ Customer_id VARCHAR2(20) CONSTRAINT Cus_pk PRIMARY KEY,
+ Customer_Name VARCHAR2(20) NOT NULL
+ Customer_Tel NUMBER
+);
+
+CREATE TABLE Product(
+ Product_id VARCHAR2(20) CONSTRAINT Pro_pk PRIMARY KEY,
+ product_name VARCHAR2(20) NOT NULL
+ Price NUMBER CONSTRAINT Posi CHECK (Price > 0),
+);
+
+CREATE TABLE Orders(
+ Customer_id VARCHAR2(20),
+ Product_id VARCHAR2(20),
+ Quantity NUMBER,
+ Total_amount NUMBER,
+ CONSTRAINT fk1_Orders FOREIGN KEY (Product_id) REFERENCES Product(Product_id),
+ CONSTRAINT fk2_Orders FOREIGN KEY (Customer_id) REFERENCES Product(Customer_id),
+);
+
+ALTER TABLE Product ADD Category VARCHAR2 (20);
+ALTER TABLE Orders ADD OrderDate DATE DEFAULT SYSDATE(); 
+
+Exercise DQL :
+
+1)
+SELECT *
+FROM Customer
+
+2)
+
+SELECT product_name, Category 
+FROM Product
+WHERE Price BETWEEN 5000 AND 10000;
+
+3)
+SELECT *
+FROM Product
+ORDER BY Price DESC;
+
+4)
+
+SELECT COUNT(*) , AVG(Total_amount) , MAX(Total_amount) , MIN(Total_amount)
+FROM Orders;
+
+5) 
+
+SELECT Product.Product_id , Orders.Quantity
+FROM Orders
+INNER JOIN Product ON Orders.Product_id=Product.Product_id
+
+6)
+SELECT Customer_id, Quantity
+FROM Orders
+GROUP BY Customer_id
+HAVING Quantity > 2
+
+SELECT   COUNT(Customer_id) AS nbr_doublon, Customer_id
+FROM     Orders
+GROUP BY Customer_id
+HAVING   COUNT(Customer_id) > 2
+
+7)For each month of 2020 year, display the number of orders
+
+SELECT EXTRACT(MONTH FROM OrderDate), Quantity
+FROM Orders
+WHERE YEAR FROM OrderDate = '2020';
+
+8) For each order, display the product_name, the customer_name, and the date of the order
+
+SELECT Product.product_name, Customers.Customer_Name ,Orders.OrderDate
+FROM ((Orders
+FULL OUTER JOIN Orders ON Customers.Customer_Name=Orders.Customer_Name)
+FULL OUTER JOIN Orders ON Product.product_name=Orders.product_name);
+
+OR
+
+SELECT Product.product_name, Customers.Customer_Name ,Orders.OrderDate
+FROM ((Orders
+INNER OUTER JOIN Orders ON Customers.Customer_Name=Orders.Customer_Name)
+INNER OUTER JOIN Orders ON Product.product_name=Orders.product_name);
+
+9)Display all the orders made three months ago
+
+SELECT (*)
+FROM Orders
+WHERE OrderDate >= DATEADD(MONTH, -3, GETDATE()) ;
+
+10)
+Display customers (customer_id) who have never ordered a product
+
+SELECT (Customer_id) 
+FROM Customer 
+WHERE NOT EXISTS(SELECT 1 FROM Orders WHERE Orders.Customer_id=Customer.Customer_id);
