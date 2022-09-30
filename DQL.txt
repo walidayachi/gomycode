@@ -73,7 +73,7 @@ INNER JOIN Product ON Orders.product_id=Product.product_id);
 
 SELECT *
 FROM Orders
-WHERE ADD_MONTHS(OrderDate,3) = SYSDATE ;
+WHERE ADD_MONTHS(OrderDate,3) = SYSDATE() ;
 
 10)
 Display customers (customer_id) who have never ordered a product
