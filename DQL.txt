@@ -45,17 +45,11 @@ SELECT COUNT(*) , AVG(Total_amount) , MAX(Total_amount) , MIN(Total_amount)
 FROM Orders;
 
 5) 
-
-SELECT Product.Product_id , Orders.Quantity
-FROM Orders
-INNER JOIN Product ON Orders.Product_id=Product.Product_id
+SELECT   COUNT(Product_id) , Product_id
+FROM     Orders
+GROUP BY Product_id
 
 6)
-SELECT Customer_id, Quantity
-FROM Orders
-GROUP BY Customer_id
-HAVING Quantity > 2
-
 SELECT   COUNT(Customer_id) AS nbr_doublon, Customer_id
 FROM     Orders
 GROUP BY Customer_id
@@ -63,33 +57,27 @@ HAVING   COUNT(Customer_id) > 2
 
 7)For each month of 2020 year, display the number of orders
 
-SELECT EXTRACT(MONTH FROM OrderDate), Quantity
+SELECT COUNT(*), EXTRACT(MONTH FROM OrderDate)
 FROM Orders
-WHERE YEAR FROM OrderDate = '2020';
+WHERE EXTRACT(YEAR FROM OrderDate) = '2020'
+GROUP BY MONTH(OrderDate);
 
 8) For each order, display the product_name, the customer_name, and the date of the order
 
 SELECT Product.product_name, Customers.Customer_Name ,Orders.OrderDate
 FROM ((Orders
-FULL OUTER JOIN Orders ON Customers.Customer_Name=Orders.Customer_Name)
-FULL OUTER JOIN Orders ON Product.product_name=Orders.product_name);
+INNER JOIN Customer ON Orders.Customer_id=Customers.Customer_id)
+INNER JOIN Product ON Orders.product_id=Product.product_id);
 
-OR
+9)
 
-SELECT Product.product_name, Customers.Customer_Name ,Orders.OrderDate
-FROM ((Orders
-INNER OUTER JOIN Orders ON Customers.Customer_Name=Orders.Customer_Name)
-INNER OUTER JOIN Orders ON Product.product_name=Orders.product_name);
-
-9)Display all the orders made three months ago
-
-SELECT (*)
+SELECT *
 FROM Orders
-WHERE OrderDate >= DATEADD(MONTH, -3, GETDATE()) ;
+WHERE ADD_MONTHS(OrderDate,3) = SYSDATE ;
 
 10)
 Display customers (customer_id) who have never ordered a product
 
 SELECT (Customer_id) 
 FROM Customer 
-WHERE NOT EXISTS(SELECT 1 FROM Orders WHERE Orders.Customer_id=Customer.Customer_id);
+WHERE Customer_id NOT IN(SELECT customer_id FROM Orders);
