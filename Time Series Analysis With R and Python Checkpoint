@@ -1,0 +1,16 @@
+1) Python :
+from matplotlib import pyplot
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('C:/Users/boti/Downloads/AirPassengers.csv',sep=',')
+def plot_timeseries(df, x, y, title="", xlabel='Date', ylabel='Births', dpi=100):
+    plt.figure(figsize=(10,4), dpi=dpi)
+    plt.plot(x, y, color='tab:red')
+    plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
+    plt.show()
+plot_timeseries(df, x=df.Month, y=df.Passengers, title='Monthly births in 1959')
+2)R
+data("AirPassengers")
+plot(AirPassengers) 
+boxplot(AirPassengers~cycle(AirPassengers)) 
+3) this time series is Trend and Seasonality
