@@ -1,0 +1,30 @@
+1) Python :
+import pandas as pd
+import numpy as np
+data = pd.read_csv('C:/Users/boti/Downloads/HR_comma_sep.csv',sep=',')
+print(data.shape)
+data.head()
+data.describe()
+print(data.isnull().sum())
+print('mean st = {}'.format(data["satisfaction_level"].mean()))
+print('median st = {}'.format(data["satisfaction_level"].median()))
+print('mode st = {}'.format(data["satisfaction_level"].mode()))
+print('min st = {}'.format(data["satisfaction_level"].min()))
+print('max st = {}'.format(data["satisfaction_level"].max()))
+print('quantile = {}'.format(data["satisfaction_level"].quantile([0.25,0.5,0.75])))
+print('var st = {}'.format(np.var(data["satisfaction_level"])))
+print('std st = {}'.format(np.std(data["satisfaction_level"])))
+
+2) R :
+data<- read.csv('C:/Users/boti/Downloads/HR_comma_sep.csv')
+dim(data)
+summary(data)
+colSums(is.na(data))
+mean(data$satisfaction_level) 
+median(data$satisfaction_level)
+mode(data$satisfaction_level)
+min(data$satisfaction_level)
+max(data$satisfaction_level)
+quantile(data$satisfaction_level)
+var(data$satisfaction_level)
+sd(data$satisfaction_level)
