@@ -1,0 +1,57 @@
+1) Python
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+data = pd.read_csv('C:/Users/boti/Downloads/HR_comma_sep.csv',sep=',')
+from sklearn.preprocessing import StandardScaler
+features = ['satisfaction_level', 'last_evaluation', 'number_project', 'average_montly_hours','time_spend_company','Work_accident','left','promotion_last_5years']
+# extracting out the features
+x = data.loc[:, features].values
+# Standardizing the features
+x_standardized = StandardScaler().fit_transform(x)
+x_standardized 
+cov_data = np.corrcoef(x.T)
+cov_data
+img = plt.matshow(cov_data, cmap=plt.cm.rainbow)
+plt.colorbar(img, ticks = [-1, 0, 1], fraction=0.045)
+for x in range(cov_data.shape[0]):
+    for y in range(cov_data.shape[1]):
+        plt.text(x, y, "%0.2f" % cov_data[x,y], size=12, color='black', ha="center", va="center")
+        
+plt.show()
+pca = PCA(n_components=2)
+principal_components=pca.fit_transform(x_standardized)
+principalDF=pd.DataFrame(data=principal_components, columns= ['principal component 1', 'principal component 2'])
+finalDf = pd.concat([principalDF, data[['salary']]], axis = 1)
+finalDf
+fig = plt.figure(figsize = (8,8))
+ax = fig.add_subplot(1,1,1) 
+ax.set_xlabel('Principal Component 1', fontsize = 15)
+ax.set_ylabel('Principal Component 2', fontsize = 15)
+ax.set_title('2 component PCA', fontsize = 20)
+targets = ['low', 'meduim', 'high']
+colors = ['r', 'g', 'b']
+for target, color in zip(targets,colors):
+    indicesToKeep = finalDf['salary'] == target
+    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
+               , finalDf.loc[indicesToKeep, 'principal component 2']
+               , c = color
+               , s = 50)
+ax.legend(targets)
+ax.grid()
+
+2) R :
+
+data<- read.csv('C:/Users/boti/Downloads/HR_comma_sep.csv')
+data_standardize <- as.data.frame(scale(data[1:8]))
+data_standardize
+data.mat <- as.matrix(data_standardize)
+cov.mat <- cor(data_standardize)
+pca <- prcomp(data_standardize,center = T,scale. = T)
+summary(pca)
+library(ggfortify)
+autoplot(pca, data = data, colour = 'salary')
+
+
