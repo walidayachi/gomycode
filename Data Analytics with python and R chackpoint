@@ -1,0 +1,168 @@
+1) Python :
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+import prince
+df = pd.read_csv('C:/Users/boti/Downloads/CleanCreditScoring.csv',sep=',')
+print(df.isnull().sum())
+print('mean Age = {}'.format(df['Age'].mean()))
+print('median Age = {}'.format(df['Age'].median()))
+print('mode Age = {}'.format(df['Age'].mode()))
+print('min Age = {}'.format(df['Age'].min()))
+print('max Age = {}'.format(df['Age'].max()))
+print('quantile = {}'.format(df['Age'].quantile([0.25,0.5,0.75])))
+print('var Age = {}'.format(np.var(df["Age"])))
+print('std Age = {}'.format(np.std(df["Age"])))
+print('count Age = {}'.format(df["Age"].value_counts()))
+
+print('mean Income = {}'.format(df['Income'].mean()))
+print('median Income = {}'.format(df['Income'].median()))
+print('mode Income = {}'.format(df['Income'].mode()))
+print('min Income = {}'.format(df['Income'].min()))
+print('max Income = {}'.format(df['Income'].max()))
+print('quantile Income = {}'.format(df['Income'].quantile([0.25,0.5,0.75])))
+print('var Income = {}'.format(np.var(df["Income"])))
+print('std Income = {}'.format(np.std(df["Income"])))
+
+print('mean Savings = {}'.format(df['Savings'].mean()))
+print('median Savings = {}'.format(df['Savings'].median()))
+print('mode Savings = {}'.format(df['Savings'].mode()))
+print('min Savings = {}'.format(df['Savings'].min()))
+print('max Savings = {}'.format(df['Savings'].max()))
+print('quantile Savings = {}'.format(df['Savings'].quantile([0.25,0.5,0.75])))
+print('var Savings = {}'.format(np.var(df["Savings"])))
+print('std Savings = {}'.format(np.std(df["Savings"])))
+print(df.describe())
+print('corelation = {}'.format(np.corrcoef(df['Income'], df['Amount'])))
+X=[]
+Y=[]
+for i in range(len(df['Amount']) ):
+   X.append(df['Amount'][i])
+   Y.append(df['Income'][i])
+X_1 = np.array(X).reshape(-1,1)
+Y_1 = np.array(Y).reshape(-1,1)
+from sklearn.linear_model import LinearRegression
+model = LinearRegression().fit(X_1, Y_1) #Create a model and fit it
+r_sq = model.score(X_1, Y_1)
+print('coefficient of determination:', r_sq)
+print('intercept:', model.intercept_)
+print('coef:', model.coef_)
+from sklearn.preprocessing import StandardScaler
+features = ['Expenses', 'Income', 'Assets', 'Debt','Amount','Age','Price','Finrat','Savings']
+# extracting out the features
+x = df.loc[:, features].values
+# Standardizing the features
+x_standardized = StandardScaler().fit_transform(x)
+x_standardized
+cov_data = np.corrcoef(x.T)
+cov_data
+img = plt.matshow(cov_data, cmap=plt.cm.rainbow)
+plt.colorbar(img, ticks = [-1, 0, 1], fraction=0.045)
+for x in range(cov_data.shape[0]):
+    for y in range(cov_data.shape[1]):
+        plt.text(x, y, "%0.2f" % cov_data[x,y], size=12, color='black', ha="center", va="center")
+        
+plt.show()
+
+pca = PCA(n_components=2)
+principal_components=pca.fit_transform(x_standardized)
+principalDF=pd.DataFrame(data=principal_components, columns= ['principal component 1', 'principal component 2'])
+finalDf = pd.concat([principalDF, df[['Status']]], axis = 1)
+print(finalDf)
+fig = plt.figure(figsize = (8,8))
+ax = fig.add_subplot(1,1,1) 
+ax.set_xlabel('Principal Component 1', fontsize = 15)
+ax.set_ylabel('Principal Component 2', fontsize = 15)
+ax.set_title('2 component PCA', fontsize = 20)
+targets = ['good', 'bad']
+colors = ['r', 'g', 'b']
+for target, color in zip(targets,colors):
+    indicesToKeep = finalDf['Status'] == target
+    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
+               , finalDf.loc[indicesToKeep, 'principal component 2']
+               , c = color
+               , s = 50)
+ax.legend(targets)
+ax.grid()
+data=df[['Status', 'Home', 'Marital', 'Records', 'Job']]
+mca = prince.MCA(n_components=2, n_iter=3,copy=True,check_input=True,engine='auto',random_state=42)
+mca = mca.fit(data)
+mca
+ax = mca.plot_coordinates( X=data,
+  ax=None,
+   figsize=(6, 6),
+ show_row_points=True,
+  row_points_size=10,
+ show_row_labels=False,
+  show_column_points=True,
+ column_points_size=30,
+  show_column_labels=False,
+  legend_n_cols=1 )
+  
+  2)R:
+  
+  data<- read.csv('C:/Users/boti/Downloads/CleanCreditScoring.csv')
+dim(data)
+summary(data)
+str(data)
+colSums(is.na(data))
+mean(data$Income)
+median(data$Income) 
+mode(data$Income)
+min(data$Income) 
+max(data$Income)
+quantile(data$Income)
+var(data$Income)
+sd(data$Income)
+mean(data$Savings)
+median(data$Savings) 
+mode(data$Savings)
+min(data$Savings) 
+max(data$Savings)
+quantile(data$Savings)
+var(data$Savings)
+sd(data$Savings)
+cor(data$Amoun, data$Income)
+linearMod <- lm(Savings ~ Income , data=data)  # build linear regression model on full data
+print(linearMod)
+data1 <- read.csv('C:/Users/boti/Downloads/CleanCreditScoring.csv')
+data1 <- head( select(my_data,Expenses, Income, Assets,Amount,Age,Price,Finrat,Savings))  
+data1
+data1_standardize <- as.data.frame(scale(data1))
+data1_standardize
+data1.mat <- as.matrix(data_standardize)
+cov.mat <- cor(data1_standardize)
+cov.mat
+data1_standardize
+pca <- prcomp(data1_standardize,center = T,scale. = T)
+summary(pca)
+library(ggfortify)
+autoplot(pca, data = data1, colour = 'Savings')
+data2 <- read.csv('C:/Users/boti/Downloads/CleanCreditScoring.csv')
+data2 <- head( select(data2,Amount,Age,Status, Home, Marital,Job))
+data2
+library(FactoMineR)
+res.mca <- MCA(data2, 
+               quanti.sup = 1:2, # Supplementary quantitative variable
+               quali.sup = 3:4,  # Supplementary qualitative variable
+               graph=FALSE)
+eig.val <- res.mca$eig
+barplot(eig.val[, 2], 
+        names.arg = 1:nrow(eig.val), 
+        main = "Variances Explained by Dimensions (%)",
+        xlab = "Principal Dimensions",
+        ylab = "Percentage of variances",
+        col ="steelblue")
+library("factoextra")
+fviz_mca_biplot (res.mca, repel = TRUE, 
+                 ggtheme = theme_minimal())
+var <- get_mca_var(res.mca)
+fviz_mca_var (res.mca, choice = "mca.cor",
+              repel = TRUE, 
+              ggtheme = theme_minimal ())
+head(var$cos2, 4)
+fviz_mca_var(res.mca, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, 
+             ggtheme = theme_minimal())
