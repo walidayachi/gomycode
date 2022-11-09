@@ -127,7 +127,7 @@ cor(data$Amoun, data$Income)
 linearMod <- lm(Savings ~ Income , data=data)  # build linear regression model on full data
 print(linearMod)
 data1 <- read.csv('C:/Users/boti/Downloads/CleanCreditScoring.csv')
-data1 <- head( select(my_data,Expenses, Income, Assets,Amount,Age,Price,Finrat,Savings))  
+data1 <-  select(my_data,Expenses, Income, Assets,Amount,Age,Price,Finrat,Savings) 
 data1
 data1_standardize <- as.data.frame(scale(data1))
 data1_standardize
